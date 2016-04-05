@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                String uri = "https://auth.getmondo.co.uk/?client_id=oauthclient_000096sfV33HOBgmnDC92H&redirect_uri=http://webnicol.fr:81/oauth/callback&response_type=code&state=toto";
+                String uri = "https://auth.getmondo.co.uk/?client_id=meowmeowmeow&redirect_uri=http://webnicol.fr:81/oauth/callback&response_type=code&state=toto";
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                 startActivity(browserIntent);
             }
