@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MondoApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_after_login">AfterLoginActivity</string>
+</resources>
