@@ -1,14 +1,14 @@
 package fr.webnicol.mondoapp;
 import android.util.Log;
 
-import com.loopj.android.http.*;
+import java.io.IOException;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+import okhttp3.Request;
 
-import java.util.ArrayList;
-
-import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by alexandrenicol on 06/04/16.
@@ -22,8 +22,8 @@ public class MondoAPI {
 
 
 
-    public static void get(String token) {
-        AsyncHttpClient client = new AsyncHttpClient();
+    public static Call get(String token, Callback callback) throws IOException {
+        /*AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("Authorization", "Bearer "+token);
         client.get(getAbsoluteUrl("accounts"), new AsyncHttpResponseHandler() {
             @Override
@@ -44,7 +44,19 @@ public class MondoAPI {
 
             }
 
-        });
+        });*/
+
+        OkHttpClient client = new OkHttpClient();
+        String url = BASE_URL+ "accounts";
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Bearer "+token)
+                .url(url)
+                .build();
+
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
+
     }
 
 }
