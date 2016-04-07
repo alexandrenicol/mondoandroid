@@ -22,7 +22,9 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="#2f3255">
+            android:background="#2f3255"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
             <LinearLayout
                 android:orientation="vertical"
@@ -43,7 +45,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/balanceText" />
+                    android:id="@+id/balanceText"
+                    android:textColor="#FFF" />
             </LinearLayout>
 
             <LinearLayout
@@ -65,8 +68,44 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:id="@+id/spentTodayText" />
+                    android:id="@+id/spentTodayText"
+                    android:textColor="#FFF" />
             </LinearLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/itemImage"
+                android:src="@mipmap/elior"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/itemTitle"
+                android:paddingLeft="20dp" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/itemMoney"
+                android:gravity="right" />
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView"
+            android:fastScrollEnabled="false" />
+
     </LinearLayout>
 </RelativeLayout>

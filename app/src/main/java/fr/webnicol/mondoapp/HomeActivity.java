@@ -28,18 +28,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -67,16 +56,18 @@ public class HomeActivity extends AppCompatActivity {
 
                         try {
                             JSONObject balanceObj = new JSONObject(responseStr);
-                            final Integer balance = balanceObj.getInt("balance");
-                            final Integer spentToday = balanceObj.getInt("spend_today");
+                            Integer balancePence = balanceObj.getInt("balance");
+                            Integer todayPence = balanceObj.getInt("spend_today");
+                            final double balance = balancePence.doubleValue()/100.0;
+                            final double spentToday = todayPence.doubleValue()/100.0;
 
                             HomeActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     TextView balanceText = (TextView) findViewById(R.id.balanceText);
                                     TextView spentTodayText = (TextView) findViewById(R.id.spentTodayText);
-                                    balanceText.setText(Integer.toString(balance));
-                                    spentTodayText.setText(Integer.toString(spentToday));
+                                    balanceText.setText(Double.toString(balance));
+                                    spentTodayText.setText(Double.toString(spentToday));
                                 }
                             });
 
