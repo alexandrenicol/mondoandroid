@@ -20,37 +20,13 @@ public class MondoAPI {
         return BASE_URL + relativeUrl;
     }
 
-
-
-    public static Call get(String token, Callback callback) throws IOException {
-        /*AsyncHttpClient client = new AsyncHttpClient();
-        client.addHeader("Authorization", "Bearer "+token);
-        client.get(getAbsoluteUrl("accounts"), new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                Log.d("+++SERVER+++", "onSuccess " + new String(bytes));
-                try {
-                    JSONArray response = new JSONArray(new String(bytes));
-                    Log.d("+++SERVER+++", "onSuccess json to string" + response.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
-            }
-
-        });*/
+    public static Call get(String url, String token, Callback callback) throws IOException {
 
         OkHttpClient client = new OkHttpClient();
-        String url = BASE_URL+ "accounts";
+        String mUrl = BASE_URL+ url;
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Bearer "+token)
-                .url(url)
+                .url(mUrl)
                 .build();
 
         Call call = client.newCall(request);
