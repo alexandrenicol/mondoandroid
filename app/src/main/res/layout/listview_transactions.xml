@@ -3,7 +3,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:padding="20dp">
 
@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/itemMoney"
+        android:layout_gravity="center_vertical"
         android:gravity="right"
-        android:layout_gravity="center_vertical" />
+        android:textColor="#000000" />
 </LinearLayout>

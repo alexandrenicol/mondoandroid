@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.Call;
@@ -117,14 +118,22 @@ public class HomeActivity extends AppCompatActivity {
 
                             for (int i = 0; i < transactionsArr.length(); i++) {
                                 JSONObject transaction = transactionsArr.getJSONObject(i);
-                                String imageURL = transaction.getJSONObject("merchant").getString("logo");
-                                if (transaction.getJson)
-                                String merchantName = transaction.getJSONObject("merchant").getString("name");
+                                String imageURL;
+                                String merchantName;
+                                Log.d("MERCHANT", transaction.get("merchant").getClass().getName());
+                                if (!transaction.isNull("merchant")){
+                                    merchantName = transaction.getJSONObject("merchant").getString("name");
+                                    imageURL = transaction.getJSONObject("merchant").getString("logo");
+                                } else {
+                                    merchantName = transaction.getString("description");
+                                }
+
                                 Integer amount = transaction.getInt("amount");
                                 transactions.add(i, new Transaction(amount, merchantName));
 
-                            }
 
+                            }
+                            Collections.reverse(transactions);
                             HomeActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

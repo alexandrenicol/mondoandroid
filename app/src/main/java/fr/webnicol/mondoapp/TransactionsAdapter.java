@@ -2,6 +2,7 @@ package fr.webnicol.mondoapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,12 @@ public class TransactionsAdapter extends ArrayAdapter<Transaction> {
         }
 
         Transaction weather = data[position];
-        holder.amount.setText(weather.getAmount());
+        if (weather.getAmount() < 0 ){
+            holder.amount.setText(Double.toString(weather.getAmount()/-100.0));
+        } else {
+            holder.amount.setText("+"+Double.toString(weather.getAmount()/100.0));
+        }
+
         holder.merchantName.setText(weather.getMerchantName());
 
         return row;
