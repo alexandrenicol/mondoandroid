@@ -1,5 +1,6 @@
 package fr.webnicol.mondoapp;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,14 +28,29 @@ public class HomeActivity extends AppCompatActivity {
 
     //private TextView balanceText;
     //private TextView spentTodayText;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        dbHelper = new DBHelper(this);
 
-
-
+        if(!UserSingleton.getInstance().isLoaded()){
+            Log.d("INSTANCE", "is not loaded");
+            Log.d("INSTANCE", "is not loaded");
+            Cursor res = dbHelper.getData(1);
+            res.moveToFirst();
+            UserSingleton.getInstance().setAccessToken(res.getString(res.getColumnIndex("access_token")));
+            UserSingleton.getInstance().setAccountId(res.getString(res.getColumnIndex("account_id")));
+            UserSingleton.getInstance().setClientId(res.getString(res.getColumnIndex("client_id")));
+            UserSingleton.getInstance().setUserId(res.getString(res.getColumnIndex("user_id")));
+            UserSingleton.getInstance().setUsername(res.getString(res.getColumnIndex("username")));
+            UserSingleton.getInstance().setLoaded(true);
+        } else {
+            Log.d("INSTANCE", "is loaded");
+        };
+        Log.d("INSTANCE TOKEN", UserSingleton.getInstance().getAccessToken());
 
         getBalance();
         getTransactions();

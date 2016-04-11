@@ -15,6 +15,14 @@ public class UserSingleton {
     private UserSingleton(){
     }
 
+    public boolean isLoaded() {
+        return this.isLoaded;
+    }
+    public void setLoaded(boolean loaded) {
+        this.isLoaded = loaded;
+    }
+
+    private boolean isLoaded;
     private String accessToken;
     private String userId;
     private String clientId;

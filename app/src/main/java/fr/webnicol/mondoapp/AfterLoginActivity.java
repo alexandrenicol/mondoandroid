@@ -1,6 +1,7 @@
 package fr.webnicol.mondoapp;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +26,7 @@ import okhttp3.Response;
 
 public class AfterLoginActivity extends AppCompatActivity {
     private Button button3;
+    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,15 @@ public class AfterLoginActivity extends AppCompatActivity {
         UserSingleton.getInstance().setAccessToken(accessToken);
         UserSingleton.getInstance().setClientId(clientId);
         UserSingleton.getInstance().setUserId(userId);
+
+        dbHelper = new DBHelper(this);
+        Cursor cursor = dbHelper.getData(1);
+        if (cursor.getCount() < 1){
+            dbHelper.insertCred(accessToken, userId, clientId, "", "");
+        } else {
+            dbHelper.updateCred(1 ,accessToken, userId, clientId, "", "");
+        }
+
 
         TextView accessTokenTV = (TextView) findViewById(R.id.accessTokenTV);
         TextView clientIDTV = (TextView) findViewById(R.id.clientIDTV);
@@ -81,6 +92,12 @@ public class AfterLoginActivity extends AppCompatActivity {
 
                             UserSingleton.getInstance().setAccountId(accountId);
                             UserSingleton.getInstance().setUsername(username);
+
+                            dbHelper.updateCred(1, UserSingleton.getInstance().getAccessToken(),
+                                    UserSingleton.getInstance().getUserId(), UserSingleton.getInstance().getClientId(),
+                                    UserSingleton.getInstance().getAccountId(), UserSingleton.getInstance().getUsername());
+
+                            UserSingleton.getInstance().setLoaded(true);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
