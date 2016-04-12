@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     private static final String DICTIONARY_TABLE_NAME = "credentials";
     private static final String DATABASE_NAME = "mondo";
     private static final String DICTIONARY_TABLE_CREATE =
@@ -21,6 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     "user_id" + " TEXT, " +
                     "client_id" + " TEXT, " +
                     "account_id" + " TEXT, " +
+                    "refresh_token" + " TEXT, " +
                     "username" + " TEXT);";
 
     DBHelper(Context context) {
@@ -35,7 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS contacts");
+        db.execSQL("DROP TABLE IF EXISTS credentials");
         onCreate(db);
     }
 
@@ -45,7 +46,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean insertCred  (String accessToken, String userId, String clientId, String accountId, String username)
+    public long insertCred  (String accessToken, String userId, String clientId, String accountId, String refreshToken, String username)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -53,12 +54,13 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("user_id", userId);
         contentValues.put("client_id", clientId);
         contentValues.put("account_id", accountId);
+        contentValues.put("refresh_token", refreshToken);
         contentValues.put("username", username);
-        db.insert("contacts", null, contentValues);
-        return true;
+
+        return db.insert("credentials", null, contentValues);
     }
 
-    public boolean updateCred (Integer id, String accessToken, String userId, String clientId, String accountId, String username)
+    public int updateCred (Integer id, String accessToken, String userId, String clientId, String accountId, String refreshToken, String username)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -66,9 +68,10 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("user_id", userId);
         contentValues.put("client_id", clientId);
         contentValues.put("account_id", accountId);
+        contentValues.put("refresh_token", refreshToken);
         contentValues.put("username", username);
-        db.update("credentials", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
-        return true;
+
+        return db.update("credentials", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
     }
 
     public Integer deleteCred (Integer id)

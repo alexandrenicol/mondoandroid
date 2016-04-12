@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.JsonWriter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -40,21 +41,113 @@ public class HomeActivity extends AppCompatActivity {
             Log.d("INSTANCE", "is not loaded");
             Log.d("INSTANCE", "is not loaded");
             Cursor res = dbHelper.getData(1);
+            res.getCount();
             res.moveToFirst();
+            Log.d("CURSOR", String.valueOf(res.getCount()));
             UserSingleton.getInstance().setAccessToken(res.getString(res.getColumnIndex("access_token")));
             UserSingleton.getInstance().setAccountId(res.getString(res.getColumnIndex("account_id")));
             UserSingleton.getInstance().setClientId(res.getString(res.getColumnIndex("client_id")));
             UserSingleton.getInstance().setUserId(res.getString(res.getColumnIndex("user_id")));
             UserSingleton.getInstance().setUsername(res.getString(res.getColumnIndex("username")));
+            UserSingleton.getInstance().setRefreshToken(res.getString(res.getColumnIndex("refresh_token")));
             UserSingleton.getInstance().setLoaded(true);
+
+            try {
+                checkToken();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         } else {
             Log.d("INSTANCE", "is loaded");
+            try {
+                checkToken();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         };
         Log.d("INSTANCE TOKEN", UserSingleton.getInstance().getAccessToken());
 
+
+
+    }
+
+    private void loadData () {
         getBalance();
         getTransactions();
+    }
 
+    private void refreshToken() throws IOException {
+        String accessToken = UserSingleton.getInstance().getAccessToken();
+        String refreshToken = UserSingleton.getInstance().getRefreshToken();
+        String clientId = UserSingleton.getInstance().getClientId();
+        JSONObject student1 = new JSONObject();
+        try {
+            student1.put("grant_type", "refresh_token");
+            student1.put("client_id", clientId);
+            student1.put("client_secret", "SsVaXOTB3PLHzgGOfbFpnhnumBsAVyJ5HcBXljzjhIiT5nT9Qj5iRDs0fl+HibHCcory/KxUN0oUc1R4QTRn");
+            student1.put("refresh_token", refreshToken);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        MondoAPI.post("oauth2/token", accessToken, student1.toString(), new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseStr = response.body().string();
+                    Log.d("RESPONSE RTOKEN", responseStr);
+                    JSONObject balanceObj = null;
+                    try {
+                        balanceObj = new JSONObject(responseStr);
+                        String refreshToken = balanceObj.getString("refresh_token");
+                        String accessToken = balanceObj.getString("access_token");
+                        UserSingleton.getInstance().setAccessToken(accessToken);
+                        UserSingleton.getInstance().setRefreshToken(refreshToken);
+                        loadData();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } else {
+                    Log.d("RESPONSE RTOKEN","error");
+                }
+            }
+        });
+    }
+
+
+    private void checkToken() throws IOException {
+        String accessToken = UserSingleton.getInstance().getAccessToken();
+
+        MondoAPI.get("ping/whoami" , accessToken, new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseStr = response.body().string();
+                    Log.d("RESPONSE WHOAMI", responseStr);
+                    loadData();
+
+                } else {
+                    Log.d("RESPONSE WHOAMI","ertyui2");
+                    refreshToken();
+                }
+            }
+        });
+
+        return ;
     }
 
     private void getBalance() {

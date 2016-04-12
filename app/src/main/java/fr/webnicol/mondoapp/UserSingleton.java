@@ -24,6 +24,16 @@ public class UserSingleton {
 
     private boolean isLoaded;
     private String accessToken;
+
+    public String getRefreshToken() {
+        return this.refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    private String refreshToken;
     private String userId;
     private String clientId;
     private String accountId;

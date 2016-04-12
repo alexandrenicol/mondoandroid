@@ -25,51 +25,42 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class AfterLoginActivity extends AppCompatActivity {
-    private Button button3;
+
     private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_after_login);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         Uri uriCalled = getIntent().getData();
         String accessToken = uriCalled.getQueryParameter("access_token");
         String clientId = uriCalled.getQueryParameter("client_id");
         String userId = uriCalled.getQueryParameter("user_id");
+        String refreshToken = uriCalled.getQueryParameter("refresh_token");
         UserSingleton.getInstance().setAccessToken(accessToken);
+        UserSingleton.getInstance().setRefreshToken(refreshToken);
         UserSingleton.getInstance().setClientId(clientId);
         UserSingleton.getInstance().setUserId(userId);
 
         dbHelper = new DBHelper(this);
         Cursor cursor = dbHelper.getData(1);
         if (cursor.getCount() < 1){
-            dbHelper.insertCred(accessToken, userId, clientId, "", "");
+            Log.d("DB C", String.valueOf(dbHelper.insertCred(accessToken, userId, clientId, "", refreshToken, "")));
         } else {
-            dbHelper.updateCred(1 ,accessToken, userId, clientId, "", "");
+            Log.d("DB U", String.valueOf(dbHelper.updateCred(1 ,accessToken, userId, clientId, "", refreshToken, "")));
         }
 
 
-        TextView accessTokenTV = (TextView) findViewById(R.id.accessTokenTV);
-        TextView clientIDTV = (TextView) findViewById(R.id.clientIDTV);
-        TextView userIDTV = (TextView) findViewById(R.id.userIDTV);
+        //TextView accessTokenTV = (TextView) findViewById(R.id.accessTokenTV);
+        //TextView clientIDTV = (TextView) findViewById(R.id.clientIDTV);
+        //TextView userIDTV = (TextView) findViewById(R.id.userIDTV);
 
-        accessTokenTV.setText(accessToken);
-        clientIDTV.setText(clientId);
-        userIDTV.setText(userId);
+        //accessTokenTV.setText(accessToken);
+        //clientIDTV.setText(clientId);
+        //userIDTV.setText(userId);
 
         try {
             MondoAPI.get("accounts" , accessToken, new Callback() {
@@ -93,11 +84,16 @@ public class AfterLoginActivity extends AppCompatActivity {
                             UserSingleton.getInstance().setAccountId(accountId);
                             UserSingleton.getInstance().setUsername(username);
 
+
                             dbHelper.updateCred(1, UserSingleton.getInstance().getAccessToken(),
                                     UserSingleton.getInstance().getUserId(), UserSingleton.getInstance().getClientId(),
-                                    UserSingleton.getInstance().getAccountId(), UserSingleton.getInstance().getUsername());
+                                    UserSingleton.getInstance().getAccountId(), UserSingleton.getInstance().getRefreshToken(),UserSingleton.getInstance().getUsername());
 
                             UserSingleton.getInstance().setLoaded(true);
+
+                            Intent homeIntent = new Intent(AfterLoginActivity.this, HomeActivity.class);
+                            startActivity(homeIntent);
+                            finish();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -110,15 +106,6 @@ public class AfterLoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        button3 = (Button) findViewById(R.id.button3);
-        button3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Perform action on click
-
-                Intent homeIntent = new Intent(AfterLoginActivity.this, HomeActivity.class);
-                startActivity(homeIntent);
-            }
-        });
     }
 
 }
