@@ -4,13 +4,19 @@ package fr.webnicol.mondoapp;
  * Created by patex on 08/04/16.
  */
 public class Transaction {
-    private String imageUrl;
+    private String imageUrl = "";
     private Integer amount;
     private String merchantName;
 
     public Transaction(Integer amount, String merchantName) {
         this.amount = amount;
         this.merchantName = merchantName;
+    }
+
+    public Transaction(Integer amount, String merchantName, String imageUrl) {
+        this.amount = amount;
+        this.merchantName = merchantName;
+        this.imageUrl = imageUrl;
     }
 
     public String getMerchantName() {

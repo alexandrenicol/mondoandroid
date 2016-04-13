@@ -110,6 +110,8 @@ public class HomeActivity extends AppCompatActivity {
                         String accessToken = balanceObj.getString("access_token");
                         UserSingleton.getInstance().setAccessToken(accessToken);
                         UserSingleton.getInstance().setRefreshToken(refreshToken);
+                        Log.d("RESPONSE RTOKEN at", accessToken);
+                        Log.d("RESPONSE RTOKEN rt", refreshToken);
                         loadData();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -117,7 +119,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
                 } else {
-                    Log.d("RESPONSE RTOKEN","error");
+                    Log.d("RESPONSE RTOKEN ERROR",response.body().string());
                 }
             }
         });
@@ -230,15 +232,15 @@ public class HomeActivity extends AppCompatActivity {
                                 String imageURL;
                                 String merchantName;
                                 Log.d("MERCHANT", transaction.get("merchant").getClass().getName());
+                                Integer amount = transaction.getInt("amount");
                                 if (!transaction.isNull("merchant")){
                                     merchantName = transaction.getJSONObject("merchant").getString("name");
                                     imageURL = transaction.getJSONObject("merchant").getString("logo");
+                                    transactions.add(i, new Transaction(amount, merchantName, imageURL));
                                 } else {
                                     merchantName = transaction.getString("description");
+                                    transactions.add(i, new Transaction(amount, merchantName));
                                 }
-
-                                Integer amount = transaction.getInt("amount");
-                                transactions.add(i, new Transaction(amount, merchantName));
 
 
                             }
