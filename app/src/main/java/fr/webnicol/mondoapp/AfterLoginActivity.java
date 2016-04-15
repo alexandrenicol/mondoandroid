@@ -40,6 +40,8 @@ public class AfterLoginActivity extends AppCompatActivity {
         String clientId = uriCalled.getQueryParameter("client_id");
         String userId = uriCalled.getQueryParameter("user_id");
         String refreshToken = uriCalled.getQueryParameter("refresh_token");
+        Log.d("QUERY PARAM acc", accessToken);
+        Log.d("QUERY PARAM ref", refreshToken);
         UserSingleton.getInstance().setAccessToken(accessToken);
         UserSingleton.getInstance().setRefreshToken(refreshToken);
         UserSingleton.getInstance().setClientId(clientId);
@@ -66,14 +68,14 @@ public class AfterLoginActivity extends AppCompatActivity {
             MondoAPI.get("accounts" , accessToken, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-
+                    Log.d("failure", "hum");
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
                         String responseStr = response.body().string();
-                        Log.d("RESPONSE", responseStr);
+                        Log.d("SUCCESS", responseStr);
                         // Do what you want to do with the response.
                         try {
                             JSONObject arr = new JSONObject(responseStr);
@@ -99,6 +101,8 @@ public class AfterLoginActivity extends AppCompatActivity {
                         }
                     } else {
                         // Request not successful
+                        String responseStr = response.body().string();
+                        Log.d("ERROR", responseStr);
                     }
                 }
             });

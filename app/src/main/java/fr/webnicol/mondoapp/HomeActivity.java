@@ -248,7 +248,7 @@ public class HomeActivity extends AppCompatActivity {
                             HomeActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    TransactionsAdapter transactionsAdapter = new TransactionsAdapter(HomeActivity.this, R.layout.listview_transactions, transactions.toArray(new Transaction[transactions.size()]));
+                                    TransactionsAdapter transactionsAdapter = new TransactionsAdapter(HomeActivity.this, transactions);
                                     ListView listTransactions = (ListView) findViewById(R.id.listTransactions);
                                     listTransactions.setAdapter(transactionsAdapter);
 

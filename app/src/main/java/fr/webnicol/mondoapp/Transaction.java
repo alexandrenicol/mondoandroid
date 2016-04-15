@@ -8,6 +8,16 @@ public class Transaction {
     private Integer amount;
     private String merchantName;
 
+    public boolean isHasBeenLoaded() {
+        return hasBeenLoaded;
+    }
+
+    public void setHasBeenLoaded(boolean hasBeenLoaded) {
+        this.hasBeenLoaded = hasBeenLoaded;
+    }
+
+    private boolean hasBeenLoaded = false;
+
     public Transaction(Integer amount, String merchantName) {
         this.amount = amount;
         this.merchantName = merchantName;
