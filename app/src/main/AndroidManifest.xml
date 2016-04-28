@@ -3,6 +3,7 @@
     package="fr.webnicol.mondoapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -43,6 +44,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fr.webnicol.mondoapp.MainActivity" />
         </activity>
+        <activity
+            android:name=".TransactionActivity"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fr.webnicol.mondoapp.HomeActivity" />></activity>
     </application>
 
 </manifest>

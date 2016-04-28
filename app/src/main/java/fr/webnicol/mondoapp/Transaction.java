@@ -1,5 +1,7 @@
 package fr.webnicol.mondoapp;
 
+import org.json.JSONObject;
+
 /**
  * Created by patex on 08/04/16.
  */
@@ -7,26 +9,38 @@ public class Transaction {
     private String imageUrl = "";
     private Integer amount;
     private String merchantName;
+    private String created;
+    private JSONObject data;
 
-    public boolean isHasBeenLoaded() {
-        return hasBeenLoaded;
+    public String getCreated() {
+        return created;
     }
 
-    public void setHasBeenLoaded(boolean hasBeenLoaded) {
-        this.hasBeenLoaded = hasBeenLoaded;
+    public void setCreated(String created) {
+        this.created = created;
     }
 
-    private boolean hasBeenLoaded = false;
+    public JSONObject getData() {
+        return data;
+    }
 
-    public Transaction(Integer amount, String merchantName) {
+    public void setData(JSONObject data) {
+        this.data = data;
+    }
+
+    public Transaction(Integer amount, String merchantName, String created, JSONObject transaction) {
         this.amount = amount;
         this.merchantName = merchantName;
+        this.created = created;
+        this.data = transaction;
     }
 
-    public Transaction(Integer amount, String merchantName, String imageUrl) {
+    public Transaction(Integer amount, String merchantName, String imageUrl, String created, JSONObject transaction) {
         this.amount = amount;
         this.merchantName = merchantName;
         this.imageUrl = imageUrl;
+        this.created = created;
+        this.data = transaction;
     }
 
     public String getMerchantName() {

@@ -75,13 +75,27 @@
             </LinearLayout>
         </LinearLayout>
 
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swipe_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/listTransactions"
+                android:fastScrollEnabled="false" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
 
-        <ListView
+        <!--<ListView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/listTransactions"
-            android:fastScrollEnabled="false" />
+            android:fastScrollEnabled="false" />-->
+
 
     </LinearLayout>
 </RelativeLayout>

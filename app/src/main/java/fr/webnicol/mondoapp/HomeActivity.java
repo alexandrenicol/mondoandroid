@@ -1,14 +1,17 @@
 package fr.webnicol.mondoapp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.JsonWriter;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -68,7 +71,23 @@ public class HomeActivity extends AppCompatActivity {
         };
         Log.d("INSTANCE TOKEN", UserSingleton.getInstance().getAccessToken());
 
+        SwipeRefreshLayout mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        /*
+         * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
+         * performs a swipe-to-refresh gesture.
+         */
+        mySwipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i("REFRESH", "onRefresh called from SwipeRefreshLayout");
 
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        loadData();
+                    }
+                }
+        );
 
     }
 
@@ -233,18 +252,20 @@ public class HomeActivity extends AppCompatActivity {
                                 String merchantName;
                                 Log.d("MERCHANT", transaction.get("merchant").getClass().getName());
                                 Integer amount = transaction.getInt("amount");
+                                String created = transaction.getString("created");
                                 if (!transaction.isNull("merchant")){
                                     merchantName = transaction.getJSONObject("merchant").getString("name");
                                     imageURL = transaction.getJSONObject("merchant").getString("logo");
-                                    transactions.add(i, new Transaction(amount, merchantName, imageURL));
+                                    transactions.add(i, new Transaction(amount, merchantName, imageURL, created, transaction));
                                 } else {
                                     merchantName = transaction.getString("description");
-                                    transactions.add(i, new Transaction(amount, merchantName));
+                                    transactions.add(i, new Transaction(amount, merchantName, created, transaction));
                                 }
 
 
                             }
                             Collections.reverse(transactions);
+
                             HomeActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -252,6 +273,18 @@ public class HomeActivity extends AppCompatActivity {
                                     ListView listTransactions = (ListView) findViewById(R.id.listTransactions);
                                     listTransactions.setAdapter(transactionsAdapter);
 
+                                    SwipeRefreshLayout mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+                                    mySwipeRefreshLayout.setRefreshing(false);
+
+                                    listTransactions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                            Intent intent = new Intent(HomeActivity.this, TransactionActivity.class);
+                                            Transaction entry = (Transaction) parent.getAdapter().getItem(position);
+                                            intent.putExtra("transaction", entry.getData().toString());
+                                            startActivity(intent);
+                                        }
+                                    });
                                 }
                             });
 

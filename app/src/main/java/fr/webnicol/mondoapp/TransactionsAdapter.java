@@ -95,17 +95,21 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import fr.webnicol.mondoapp.imageLoader.ImageLoader;
+
 public class TransactionsAdapter extends BaseAdapter {
 
     ArrayList myList = new ArrayList();
     LayoutInflater inflater;
     Context context;
+    public ImageLoader imageLoader;
 
 
     public TransactionsAdapter(Context context, ArrayList myList) {
         this.myList = myList;
         this.context = context;
         inflater = LayoutInflater.from(this.context);
+        imageLoader = new ImageLoader(this.context);
     }
 
     @Override
@@ -144,15 +148,17 @@ public class TransactionsAdapter extends BaseAdapter {
             mViewHolder.amount.setText("+"+Double.toString(currentListData.getAmount()/100.0));
         }
         mViewHolder.merchantName.setText(currentListData.getMerchantName());
+        mViewHolder.created.setText(currentListData.getCreated());
         Log.d("DEBUG", mViewHolder.amount.getText().toString());
         Log.d("DEBUG", mViewHolder.imageView.getDrawable().toString());
-        if (currentListData.getImageUrl() != "" ) {
+
+        /*if (currentListData.getImageUrl() != "" ) {
             Log.d("URL", currentListData.getImageUrl());
             new DownloadImageTask(mViewHolder.imageView)
                     .execute(currentListData.getImageUrl());
+        }*/
 
-
-        }
+        imageLoader.DisplayImage(currentListData.getImageUrl(), mViewHolder.imageView);
 
         return convertView;
     }
@@ -161,9 +167,11 @@ public class TransactionsAdapter extends BaseAdapter {
         TextView amount;
         TextView merchantName;
         ImageView imageView;
+        TextView created;
 
         public MyViewHolder(View item) {
             amount = (TextView) item.findViewById(R.id.itemMoney);
+            created = (TextView) item.findViewById(R.id.itemDate);
             merchantName = (TextView) item.findViewById(R.id.itemTitle);
             imageView = (ImageView) item.findViewById(R.id.itemImage);
         }
