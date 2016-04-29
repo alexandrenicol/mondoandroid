@@ -50,7 +50,18 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="fr.webnicol.mondoapp.HomeActivity" />></activity>
+                android:value="fr.webnicol.mondoapp.HomeActivity" />
+            >
+        </activity>
+        <activity
+            android:name=".BaseActivity"
+            android:label="@string/title_activity_base"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="fr.webnicol.mondoapp.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>
