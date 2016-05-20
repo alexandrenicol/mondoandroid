@@ -58,7 +58,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fr.webnicol.mondoapp.HomeActivity" />
-            >
+            <intent-filter>
+                <action android:name="OPEN_TRANSACTION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".BaseActivity"
@@ -88,6 +91,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="fr.webnicol.mondoapp.TransactionActivity" />
         </activity>
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
