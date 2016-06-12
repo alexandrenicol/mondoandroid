@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "677771878824",
+    "firebase_url": "https://alpine-ship-104407.firebaseio.com",
+    "project_id": "alpine-ship-104407",
+    "storage_bucket": "alpine-ship-104407.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677771878824:android:f9dd3d173481ffd3",
+        "android_client_info": {
+          "package_name": "fr.webnicol.mondoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "677771878824-opkjnkaqq7rp3a28jut69s9bst1ujdtr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIAWRScf5ElXZ7ULdhDgF_GHdQmV7rcSI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
