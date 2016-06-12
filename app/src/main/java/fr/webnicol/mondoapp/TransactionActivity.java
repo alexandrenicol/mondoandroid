@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,6 +20,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import fr.webnicol.mondoapp.imageLoader.ImageLoader;
+
 public class TransactionActivity extends AppCompatActivity {
 
     MapView mapView;
@@ -28,11 +36,13 @@ public class TransactionActivity extends AppCompatActivity {
     Double latitude;
     Double zoom;
     String merchantName;
+    public ImageLoader imageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction);
+        imageLoader = new ImageLoader(getApplicationContext());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,10 +95,10 @@ public class TransactionActivity extends AppCompatActivity {
 
                 Integer amount = transaction.getInt("amount");
                 String created = transaction.getString("created");
-                String category;
-                String emoji;
-                String imageURL;
-                String addressShortFormatted;
+                String category= "Not available";
+                String emoji= "Not available";
+                String imageURL = null;
+                String addressShortFormatted = "Not available";
 
                 if (!transaction.isNull("merchant")){
                     merchantName = transaction.getJSONObject("merchant").getString("name");
@@ -112,9 +122,41 @@ public class TransactionActivity extends AppCompatActivity {
                     merchantName = transaction.getString("description");
                 }
 
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                try {
+                    Date createdDate = df1.parse(created);
+                    created = df.format(createdDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
 
                 TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
                 toolbarTitle.setText(created);
+
+                TextView textMerchant = (TextView) findViewById(R.id.textMerchant);
+                TextView textAddress = (TextView) findViewById(R.id.textAddress);
+                TextView textAmount = (TextView) findViewById(R.id.textAmount);
+                TextView textCategory = (TextView) findViewById(R.id.textCategory);
+                TextView textEmoji = (TextView) findViewById(R.id.textEmoji);
+                ImageView imageLogo = (ImageView) findViewById(R.id.imageLogo);
+
+                textMerchant.setText(merchantName);
+                textAddress.setText(addressShortFormatted);
+                textCategory.setText(category);
+                textEmoji.setText(emoji);
+
+                if (amount < 0 ){
+                    textAmount.setText(Double.toString(amount/-100.0));
+                } else {
+                    textAmount.setText("+"+Double.toString(amount/100.0));
+                }
+
+                if (imageURL != null) {
+                    imageLoader.DisplayImage(imageURL, imageLogo);
+                }
+
 
 
             } catch (JSONException e) {

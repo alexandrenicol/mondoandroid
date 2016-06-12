@@ -93,7 +93,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import fr.webnicol.mondoapp.imageLoader.ImageLoader;
 
@@ -148,7 +152,19 @@ public class TransactionsAdapter extends BaseAdapter {
             mViewHolder.amount.setText("+"+Double.toString(currentListData.getAmount()/100.0));
         }
         mViewHolder.merchantName.setText(currentListData.getMerchantName());
-        mViewHolder.created.setText(currentListData.getCreated());
+
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        String created = currentListData.getCreated();
+        try {
+            Date createdDate = df1.parse(created);
+            created = df.format(createdDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        mViewHolder.created.setText(created);
         Log.d("DEBUG", mViewHolder.amount.getText().toString());
         Log.d("DEBUG", mViewHolder.imageView.getDrawable().toString());
 
