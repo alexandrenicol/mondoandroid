@@ -1,10 +1,14 @@
 package fr.webnicol.mondoapp;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +44,33 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         dbHelper = new DBHelper(this);
 
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        200);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+
         if(!UserSingleton.getInstance().isLoaded()){
             Log.d("INSTANCE", "is not loaded");
             Log.d("INSTANCE", "is not loaded");
@@ -47,18 +78,26 @@ public class HomeActivity extends AppCompatActivity {
             res.getCount();
             res.moveToFirst();
             Log.d("CURSOR", String.valueOf(res.getCount()));
-            UserSingleton.getInstance().setAccessToken(res.getString(res.getColumnIndex("access_token")));
-            UserSingleton.getInstance().setAccountId(res.getString(res.getColumnIndex("account_id")));
-            UserSingleton.getInstance().setClientId(res.getString(res.getColumnIndex("client_id")));
-            UserSingleton.getInstance().setUserId(res.getString(res.getColumnIndex("user_id")));
-            UserSingleton.getInstance().setUsername(res.getString(res.getColumnIndex("username")));
-            UserSingleton.getInstance().setRefreshToken(res.getString(res.getColumnIndex("refresh_token")));
-            UserSingleton.getInstance().setLoaded(true);
 
-            try {
-                checkToken();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (res.getCount() < 1) {
+                String uri = "https://auth.getmondo.co.uk/?client_id=oauthclient_000096sfV33HOBgmnDC92H&redirect_uri=http://webnicol.fr:81/oauth/callback&response_type=code&state=toto";
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                startActivity(browserIntent);
+                finish();
+            } else {
+                UserSingleton.getInstance().setAccessToken(res.getString(res.getColumnIndex("access_token")));
+                UserSingleton.getInstance().setAccountId(res.getString(res.getColumnIndex("account_id")));
+                UserSingleton.getInstance().setClientId(res.getString(res.getColumnIndex("client_id")));
+                UserSingleton.getInstance().setUserId(res.getString(res.getColumnIndex("user_id")));
+                UserSingleton.getInstance().setUsername(res.getString(res.getColumnIndex("username")));
+                UserSingleton.getInstance().setRefreshToken(res.getString(res.getColumnIndex("refresh_token")));
+                UserSingleton.getInstance().setLoaded(true);
+
+                try {
+                    checkToken();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         } else {
@@ -69,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         };
-        Log.d("INSTANCE TOKEN", UserSingleton.getInstance().getAccessToken());
+        //Log.d("INSTANCE TOKEN", UserSingleton.getInstance().getAccessToken());
 
         SwipeRefreshLayout mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         /*
@@ -89,6 +128,32 @@ public class HomeActivity extends AppCompatActivity {
                 }
         );
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 200: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    loadData ();
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     private void loadData () {
