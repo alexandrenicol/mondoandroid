@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -25,8 +27,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -44,30 +52,34 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         dbHelper = new DBHelper(this);
 
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1){
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            // Here, thisActivity is the current activity
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
-            } else {
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
 
-                // No explanation needed, we can request the permission.
+                } else {
 
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        200);
+                    // No explanation needed, we can request the permission.
 
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            200);
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+
             }
         }
 
@@ -165,18 +177,16 @@ public class HomeActivity extends AppCompatActivity {
         String accessToken = UserSingleton.getInstance().getAccessToken();
         String refreshToken = UserSingleton.getInstance().getRefreshToken();
         String clientId = UserSingleton.getInstance().getClientId();
-        JSONObject student1 = new JSONObject();
-        try {
-            student1.put("grant_type", "refresh_token");
-            student1.put("client_id", clientId);
-            student1.put("client_secret", "SsVaXOTB3PLHzgGOfbFpnhnumBsAVyJ5HcBXljzjhIiT5nT9Qj5iRDs0fl+HibHCcory/KxUN0oUc1R4QTRn");
-            student1.put("refresh_token", refreshToken);
+        Map<String, String> payload = new TreeMap<String, String>();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        payload.put("grant_type", "refresh_token");
+        payload.put("client_id", clientId);
+        payload.put("client_secret", "SsVaXOTB3PLHzgGOfbFpnhnumBsAVyJ5HcBXljzjhIiT5nT9Qj5iRDs0fl+HibHCcory/KxUN0oUc1R4QTRn");
+        payload.put("refresh_token", refreshToken);
 
-        MondoAPI.post("oauth2/token", accessToken, student1.toString(), new Callback() {
+
+        Log.d("RTOKEN PAYLOAD", payload.toString());
+        MondoAPI.postForm("oauth2/token", accessToken, payload, new Callback() {
 
             @Override
             public void onFailure(Call call, IOException e) {
@@ -224,7 +234,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     String responseStr = response.body().string();
                     Log.d("RESPONSE WHOAMI", responseStr);
-                    loadData();
+                    refreshToken();
 
                 } else {
                     Log.d("RESPONSE WHOAMI","ertyui2");

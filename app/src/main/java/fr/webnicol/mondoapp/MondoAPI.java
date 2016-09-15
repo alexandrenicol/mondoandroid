@@ -2,9 +2,12 @@ package fr.webnicol.mondoapp;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.SortedMap;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
@@ -48,6 +51,30 @@ public class MondoAPI {
                 .addHeader("Authorization", "Bearer "+token)
                 .url(mUrl)
                 .post(body)
+                .build();
+
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
+
+    }
+
+    public static Call postForm(String url, String token, Map<String, String> payload , Callback callback) throws IOException {
+        FormBody.Builder formBuilder = new FormBody.Builder();
+
+
+        for (Map.Entry<String, String> entry : payload.entrySet())
+        {
+            formBuilder.add(entry.getKey(), entry.getValue());
+        }
+
+        RequestBody formBody = formBuilder.build();
+        OkHttpClient client = new OkHttpClient();
+        String mUrl = BASE_URL+ url;
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Bearer "+token)
+                .url(mUrl)
+                .post(formBody)
                 .build();
 
         Call call = client.newCall(request);
