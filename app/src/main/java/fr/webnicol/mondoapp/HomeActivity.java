@@ -206,6 +206,10 @@ public class HomeActivity extends AppCompatActivity {
                         UserSingleton.getInstance().setRefreshToken(refreshToken);
                         Log.d("RESPONSE RTOKEN at", accessToken);
                         Log.d("RESPONSE RTOKEN rt", refreshToken);
+
+                        DBHelper dbHelper = new DBHelper(getApplicationContext());
+                        Log.d("DB U", String.valueOf(dbHelper.updateCred(1 ,accessToken,  UserSingleton.getInstance().getUserId(), UserSingleton.getInstance().getClientId(), UserSingleton.getInstance().getAccountId(), refreshToken, UserSingleton.getInstance().getUsername())));
+
                         loadData();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -214,6 +218,10 @@ public class HomeActivity extends AppCompatActivity {
 
                 } else {
                     Log.d("RESPONSE RTOKEN ERROR",response.body().string());
+                    String uri = "https://auth.getmondo.co.uk/?client_id=oauthclient_000096sfV33HOBgmnDC92H&redirect_uri=http://webnicol.fr:81/oauth/callback&response_type=code&state=toto";
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(browserIntent);
+                    finish();
                 }
             }
         });
